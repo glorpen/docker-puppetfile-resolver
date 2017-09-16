@@ -25,7 +25,13 @@ echo "Puppetfile: $puppetfile_path"
 echo "Output: $output_dir"
 echo "Cache path: ${cache_path:-[not set]}"
 
-echo ""
+if [ ! "${puppetfile_path}" -nt "${output_dir}" ];
+then
+	echo "No changes detected, exitting"
+	exit 0
+fi
+
+echo "Running container..."
 
 DOCKER_ARGS=""
 
