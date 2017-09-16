@@ -12,7 +12,7 @@ fi
 
 source /opt/rh/rh-ruby*/enable
 
-echo "Puppetfile changed, Updating modules"
+echo "Puppetfile changed, updating modules"
 
 # fetch required puppet modules
 r10k puppetfile install --verbose info --moduledir "${puppet_modules}" --puppetfile "${puppet_file}"
