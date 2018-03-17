@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+#
+# author: Arkadiusz Dzięgiel <arkadiusz.dziegiel@glorpen.pl>
+#
+
 PUPPET_FILE="/builder/Puppetfile"
 PUPPET_MODULES_PATH="/builder/output"
 CACHE_PATH="/builder/cache"

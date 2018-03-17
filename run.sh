@@ -1,7 +1,10 @@
 #!/bin/bash -e
 
-TEMP=$(getopt -o c: --long cache: -n 'puppetfile-resolver' -- "$@")
+#
+# author: Arkadiusz Dzięgiel <arkadiusz.dziegiel@glorpen.pl>
+#
 
+TEMP=$(getopt -o c: --long cache: -n 'puppetfile-resolver' -- "$@")
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 eval set -- "$TEMP"
