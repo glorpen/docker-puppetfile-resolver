@@ -17,10 +17,4 @@ RUN yum -y install patch \
 ADD r10k.yaml /etc/puppetlabs/r10k/r10k.yaml
 ADD resolve.sh /usr/local/bin/puppetfile-resolve
 
-RUN useradd builder -md /builder \
-    && mkdir /builder/.ssh /builder/output /builder/cache \
-    && chown -R builder:builder /builder/
-
-USER builder
-
-ENTRYPOINT ["/usr/local/bin/puppetfile-resolve"]
+CMD ["/usr/local/bin/puppetfile-resolve"]

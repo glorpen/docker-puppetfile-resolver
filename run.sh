@@ -25,23 +25,12 @@ echo "Puppetfile: $puppetfile_path"
 echo "Output: $output_dir"
 echo "Cache path: ${cache_path:-[not set]}"
 
-if [ ! "${puppetfile_path}" -nt "${output_dir}" ];
-then
-	echo "No changes detected, exitting"
-	exit 0
-fi
-
 echo "Running container..."
 
 DOCKER_ARGS=""
 
 if [ "$cache_path" != "" ];
 then
-	 if [ ! -w "${cache_path}" ] || [ ! -d "${cache_path}" ];
-	 then
-	 	echo "Cache dir is not a writtable directory"
-	 	exit 1
-	 fi
 	 DOCKER_ARGS="${DOCKER_ARGS} -v ${cache_path}:/builder/cache"
 fi
 

@@ -1,28 +1,50 @@
 #!/bin/bash -e
 
-puppet_file="/builder/Puppetfile"
-puppet_modules="/builder/output"
-cache_dir="/builder/cache"
+PUPPET_FILE="/builder/Puppetfile"
+PUPPET_MODULES_PATH="/builder/output"
+CACHE_PATH="/builder/cache"
 
-if [ ! "${puppet_file}" -nt "${puppet_modules}" ];
+TARGET_UID=$(stat --format %u "${PUPPET_FILE}")
+TARGET_GID=$(stat --format %g "${PUPPET_FILE}")
+
+do_resolve(){	
+	source /opt/rh/rh-ruby*/enable
+	
+	echo "Puppetfile changed, updating modules"
+	
+	# fetch required puppet modules
+	r10k puppetfile install --verbose info --moduledir "${PUPPET_MODULES_PATH}" --puppetfile "${PUPPET_FILE}"
+	
+	# remove .git directories
+	find "${PUPPET_MODULES_PATH}" -name ".git" -prune -exec rm -rf {} \;
+	# remove spec directories
+	find "${PUPPET_MODULES_PATH}" -maxdepth 2 -mindepth 2 -name "spec" -type d -prune -exec rm -rf {} \;
+	
+	touch -m -r "${PUPPET_FILE}" "${PUPPET_MODULES_PATH}"
+}
+
+do_check(){
+	if [ ! "${PUPPET_FILE}" -nt "${PUPPET_MODULES_PATH}" ] && [ ! "${PUPPET_FILE}" -ot "${PUPPET_MODULES_PATH}" ];
+	then
+		echo "Puppetfile did not change, exitting."
+		exit 0
+	fi
+}
+add_user(){
+	groupadd -og $TARGET_GID builder
+	useradd -d /builder -NMo -u $TARGET_UID -g $TARGET_GID builder
+}
+
+if [ $UID -eq 0 ];
 then
-	echo "Puppetfile did not change, exitting."
-	exit 0
+	do_check
+	add_user
+	
+	mkdir -p "${CACHE_PATH}" "${PUPPET_MODULES_PATH}"
+	chown $TARGET_UID:$TARGET_GID -R "${PUPPET_MODULES_PATH}"/ "${CACHE_PATH}"/
+	
+	echo "Dropping privileges"
+	su builder -c /usr/local/bin/puppetfile-resolve
+else
+	do_resolve
 fi
-
-source /opt/rh/rh-ruby*/enable
-
-echo "Puppetfile changed, updating modules"
-
-# fetch required puppet modules
-r10k puppetfile install --verbose info --moduledir "${puppet_modules}" --puppetfile "${puppet_file}"
-
-# remove .git directories
-find "${puppet_modules}" -name ".git" -prune -exec rm -rf {} \;
-# remove spec directories
-find "${puppet_modules}" -maxdepth 2 -mindepth 2 -name "spec" -type d -prune -exec rm -rf {} \;
-
-chown --reference="${puppet_file}" -R "${puppet_modules}"/
-chown --reference="${puppet_file}" -R "${cache_dir}"/
-
-touch -m -r "${puppet_file}" "${puppet_modules}"
