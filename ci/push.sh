@@ -3,4 +3,5 @@
 # author: Arkadiusz Dzięgiel <arkadiusz.dziegiel@glorpen.pl>
 #
 
-echo docker push "${REPO_NAME}"
+docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
+docker push "${REPO_NAME}"

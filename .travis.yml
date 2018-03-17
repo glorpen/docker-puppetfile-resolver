@@ -6,8 +6,11 @@ services:
   - docker
 
 env:
-  - REPO_NAME=glorpen/puppetfile-resolver
-    REPO_TAG=$(if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "latest"; else echo "${TRAVIS_BRANCH/v}"; fi)
+  global:
+    - REPO_NAME=glorpen/puppetfile-resolver
+    - REPO_TAG=$(if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "latest"; else echo "${TRAVIS_BRANCH/v}"; fi)
+    - secure: "QHMiue2er1+yFkrn51wQx7BtS4cR+jO8UU/nkfWHxarsr1zU/vZyFXRRLQh6J74rCbj3FyVLd69mRTn3/svG/fI79iaDnC+LM71CP6AaaHEKgQeY3uSqTzQIGhslxEkU57CRpqkcMXWcWGiZWlpwig6u1I7vjhUMKGqV/+OUIoQOiPiT+1Djc0HTFSf8dBts4KZ50fiILb0Y80hmtJxcrrIqAtKb5lVO5wn6WcLVS7jmv11mzUW+sH0G5Z2ehpHbPuU4/A4uVF7U7HY0KC9Un2Otor75D32Zyf7PJQ+4HWQvSwkDhOl0Cvh69UWHEfB4Uit71hOvTIQxtZ0xxRU8eJCVJX+4bY3ir7F4N5xyoTSox7NpGxwFgSu8/A+nv/+13jWHespz8e4Q27n68M9raGRg+6XU6jRNf+Ocwvw4vP+j0YVJSm/2x8I5RUn9B/p5ZpFOOneES3PWSfwZLLywyy5iWHJDyG809s17TA9wuuQT5sv05zKVBCsp8TdNiooKhORuPEKVQEFI1jA5pho6mggd/bnjL6SKuA9nVWpTHrtcu5AraYFm6115wOIkWoNzgsM0g4LWyGvRJmc3MnMGFTGI2QULYScNGOJLE+Lez9N6hzv0VFoNDq5hBeez4ORAPmIqvCoYXqZhtZ5Jyl8PEcMMJ2NxbLDZsFzu24qPLpw="
+    - secure: "fbVBMWemO+FuCPYfi+V/+yg+kp4laiVXgg5A4SZ3hM3pPW4kxxeQub7R61GoQ7oXflVY3liJp3TgYLktdK7IpETQ+VWYGfXAP8/SSAu1BUjeOwV2F7on5f3jMmrkpb3HZfiWKopXChMuSgwu+v19/gZysKn3EK44+zqyXQ5W/TuAXIdE9lZJq3JSy20aaTzAXaux2xP/2WG16oN+f+u1cfC8JdiVzDWt/h2iu6JXb27T6vhHfFP2GIKpw++S/aORAoZJoQrtPhRNBggM5VxnR5LCztJmpd8nJJtEhfXg6DDEKzOuD4rkJflMTtWT7q4r6nde8GZpBMhJ+epzenetSO0vtAYi7iIe/cnxjVvXRxpe4Pl9yxMT2NhsFgyrx/u5nkx8t2XRzSbi+VnmbZdwkni/ugZvsgUSXW2TknJMcw9TcAqFaIiuJcH3RJ3GLXlOlHVM+MoUadMY7DCw3NoBdWaX6ZA4rthfa6Kt8eQQDdLIQ8aoNB/+bIBpGy15fL/MP99u20nHjHV07xO2vnhfhXQWS7x9Q3U8bc4jBnLCEJtq08GW+tPlDFkA9T74zqdbNCtLyx6gFan9Jb5enRycbLjo4nhc9okIlJ7NMcAs7EkaJ2fo6v6kjims9+d8KrC5/cZi5unkoMokCY9EvmkIfHDzpuOhwuhwWUA23o0LWAA="
 
 before_install:
   - docker build -t "${REPO_NAME}":"${REPO_TAG}" .
