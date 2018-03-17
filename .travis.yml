@@ -5,8 +5,28 @@ language: bash
 services:
   - docker
 
+env:
+  - REPO_NAME=glorpen/puppetfile-resolver
+    REPO_TAG=$(if [ "${TRAVIS_BRANCH}" == "master" ]; then echo "latest"; else echo "${TRAVIS_BRANCH/v}"; fi)
+
 before_install:
-  - docker build -t glorpen/puppetfile-resolver .
+  - docker build -t "${REPO_NAME}":"${REPO_TAG}" .
 
 script:
   - docker image ls
+
+branches:
+  only:
+    - master
+    - /^v\d/
+deploy:
+  - provider: script
+    script: bash ci/push.sh
+    on:
+      tags: true
+      all_branches: true
+  - provider: script
+    script: bash ci/push.sh
+    on:
+      branch: master
+  
