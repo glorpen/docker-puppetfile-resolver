@@ -1,18 +1,18 @@
-FROM centos:centos7
+FROM alpine:3.7
 LABEL maintainer="Arkadiusz Dzięgiel <arkadiusz.dziegiel@glorpen.pl>"
 
 ARG R10K_VERSION="2.5.5"
 
-RUN yum -y install centos-release-scl-rh \
-    && yum -y install rh-ruby24-ruby git \
-    && yum clean all
+RUN apk update \
+    && apk add ruby git shadow \
+    && rm -rf /var/cache/apk/*
 
 ADD r10k-forge-cache.patch /usr/local/share/
 
 # add r10k to puppet ruby instalation
-RUN yum -y install patch \
-    && scl enable rh-ruby24 'gem install r10k -v ${R10K_VERSION}' \
-    && patch -p1 -d /opt/rh/rh-ruby*/root/usr/local/share/gems/gems/r10k-*/ < /usr/local/share/r10k-forge-cache.patch
+RUN gem install r10k:${R10K_VERSION} json_pure --no-ri --no-rdoc \
+    && cd /usr/lib/ruby/gems/*/gems/r10k-${R10K_VERSION}/ && patch -p1 < /usr/local/share/r10k-forge-cache.patch \
+    && rm -rf /usr/lib/ruby/gems/*/cache
 
 ADD r10k.yaml /etc/puppetlabs/r10k/r10k.yaml
 ADD resolve.sh /usr/local/bin/puppetfile-resolve

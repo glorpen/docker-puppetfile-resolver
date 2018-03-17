@@ -1,15 +1,13 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 PUPPET_FILE="/builder/Puppetfile"
 PUPPET_MODULES_PATH="/builder/output"
 CACHE_PATH="/builder/cache"
 
-TARGET_UID=$(stat --format %u "${PUPPET_FILE}")
-TARGET_GID=$(stat --format %g "${PUPPET_FILE}")
+TARGET_UID=$(stat -c %u "${PUPPET_FILE}")
+TARGET_GID=$(stat -c %g "${PUPPET_FILE}")
 
 do_resolve(){	
-	source /opt/rh/rh-ruby*/enable
-	
 	echo "Puppetfile changed, updating modules"
 	
 	# fetch required puppet modules
@@ -32,10 +30,10 @@ do_check(){
 }
 add_user(){
 	groupadd -og $TARGET_GID builder
-	useradd -d /builder -NMo -u $TARGET_UID -g $TARGET_GID builder
+	MAIL_DIR=/tmp useradd -s /bin/sh -d /builder -NMo -u $TARGET_UID -g $TARGET_GID builder
 }
 
-if [ $UID -eq 0 ];
+if [ $(id -u) -eq 0 ];
 then
 	do_check
 	add_user
