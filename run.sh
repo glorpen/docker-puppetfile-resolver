@@ -14,7 +14,7 @@ do
 	case "$1"
 	in
 		-c|--cache)
-			cache_path="$(realpath "${2}")"; shift 2;;
+			cache_path="${2}"; shift 2;;
 		-i|--image)
 			image_name="${2}"; shift 2;;
 		--)
@@ -23,8 +23,8 @@ do
 	esac
 done
 
-puppetfile_path="$(realpath ${1})"; shift;
-output_dir="$(realpath ${1})"; shift;
+puppetfile_path="${1}"; shift;
+output_dir="${1}"; shift;
 
 echo "Puppetfile: $puppetfile_path"
 echo "Output: $output_dir"
@@ -32,7 +32,7 @@ echo "Cache path: ${cache_path:-[not set]}"
 
 echo "Running container..."
 
-DOCKER_ARGS="--env HTTPS_PROXY=http://172.17.0.2:3128 --env HTTP_PROXY=http://172.17.0.2:3128 --env http_proxy=http://172.17.0.2:3128"
+DOCKER_ARGS=""
 
 if [ "$cache_path" != "" ];
 then
