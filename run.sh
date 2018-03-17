@@ -4,7 +4,7 @@
 # author: Arkadiusz Dzięgiel <arkadiusz.dziegiel@glorpen.pl>
 #
 
-TEMP=$(getopt -o c: --long cache: -n 'puppetfile-resolver' -- "$@")
+TEMP=$(getopt -o c:i: --long cache: --long image: -n 'puppetfile-resolver' -- "$@")
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 eval set -- "$TEMP"
@@ -15,6 +15,8 @@ do
 	in
 		-c|--cache)
 			cache_path="$(realpath "${2}")"; shift 2;;
+		-i|--image)
+			image_name="${2}"; shift 2;;
 		--)
 			shift; break;;
 		*) echo "Internal error!" ; exit 1 ;;
@@ -30,7 +32,7 @@ echo "Cache path: ${cache_path:-[not set]}"
 
 echo "Running container..."
 
-DOCKER_ARGS=""
+DOCKER_ARGS="--env HTTPS_PROXY=http://172.17.0.2:3128 --env HTTP_PROXY=http://172.17.0.2:3128 --env http_proxy=http://172.17.0.2:3128"
 
 if [ "$cache_path" != "" ];
 then
@@ -52,4 +54,4 @@ docker run --rm \
 -v "${HOME}/.ssh":"/builder/.ssh":ro \
 -v "${tmp_path}":/tmp \
 $DOCKER_ARGS \
-glorpen/puppetfile-resolver $@
+"${image_name:-glorpen/puppetfile-resolver}" $@
