@@ -2,6 +2,7 @@ FROM alpine:3.7
 LABEL maintainer="Arkadiusz Dzięgiel <arkadiusz.dziegiel@glorpen.pl>"
 
 ARG R10K_VERSION="2.5.5"
+ARG IMAGE_VERSION="latest"
 
 RUN apk update \
     && apk add ruby git shadow \
@@ -18,3 +19,11 @@ ADD r10k.yaml /etc/puppetlabs/r10k/r10k.yaml
 ADD resolve.sh /usr/local/bin/puppetfile-resolve
 
 CMD ["/usr/local/bin/puppetfile-resolve"]
+
+# Metadata.
+LABEL \
+      org.label-schema.name="pupetfile-resolver" \
+      org.label-schema.description="This container will simply checkout modules in given Puppetfile" \
+      org.label-schema.version=$IMAGE_VERSION \
+      org.label-schema.vcs-url="https://github.com/glorpen/docker-puppetfile-resolver" \
+      org.label-schema.schema-version="1.0"

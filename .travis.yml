@@ -13,7 +13,7 @@ env:
     - secure: "fbVBMWemO+FuCPYfi+V/+yg+kp4laiVXgg5A4SZ3hM3pPW4kxxeQub7R61GoQ7oXflVY3liJp3TgYLktdK7IpETQ+VWYGfXAP8/SSAu1BUjeOwV2F7on5f3jMmrkpb3HZfiWKopXChMuSgwu+v19/gZysKn3EK44+zqyXQ5W/TuAXIdE9lZJq3JSy20aaTzAXaux2xP/2WG16oN+f+u1cfC8JdiVzDWt/h2iu6JXb27T6vhHfFP2GIKpw++S/aORAoZJoQrtPhRNBggM5VxnR5LCztJmpd8nJJtEhfXg6DDEKzOuD4rkJflMTtWT7q4r6nde8GZpBMhJ+epzenetSO0vtAYi7iIe/cnxjVvXRxpe4Pl9yxMT2NhsFgyrx/u5nkx8t2XRzSbi+VnmbZdwkni/ugZvsgUSXW2TknJMcw9TcAqFaIiuJcH3RJ3GLXlOlHVM+MoUadMY7DCw3NoBdWaX6ZA4rthfa6Kt8eQQDdLIQ8aoNB/+bIBpGy15fL/MP99u20nHjHV07xO2vnhfhXQWS7x9Q3U8bc4jBnLCEJtq08GW+tPlDFkA9T74zqdbNCtLyx6gFan9Jb5enRycbLjo4nhc9okIlJ7NMcAs7EkaJ2fo6v6kjims9+d8KrC5/cZi5unkoMokCY9EvmkIfHDzpuOhwuhwWUA23o0LWAA="
 
 before_install:
-  - docker build -t "${REPO_NAME}":"${REPO_TAG}" .
+  - docker build --build-arg IMAGE_VERSION="${REPO_TAG}" -t "${REPO_NAME}":"${REPO_TAG}" .
 
 script:
   - bash ci/make-test.sh
